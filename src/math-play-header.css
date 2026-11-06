@@ -1,0 +1,51 @@
+.math-play-header {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 35%);
+  grid-template-areas: "copy friends" "tabs friends";
+  align-items: center;
+  gap: 20px 12px;
+  margin-bottom: 24px;
+  padding: 27px 32px;
+  overflow: hidden;
+  border: 1px solid #dce7d9;
+  border-radius: 17px;
+  background: #f0f6ed url('./assets/math-play-geometry.svg') center / cover;
+}
+.math-play-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, #f2f7eefa, #f2f7eedb 40%, #edf6ed21 75%);
+  pointer-events: none;
+}
+.math-play-copy { grid-area: copy; min-width: 0; }
+.math-play-eyebrow { display: inline-flex; align-items: center; gap: 7px; color: #66816d; font-size: 10px; font-weight: 700; letter-spacing: 1.8px; }
+.math-play-eyebrow::before { content: "✧"; font-size: 16px; color: #9e9a65; }
+.math-play-copy h1 { color: #2b5142; font-size: clamp(32px, 3.3vw, 47px); font-weight: 800; letter-spacing: -1.7px; line-height: 1.2; margin: 7px 0 11px; }
+.math-play-copy h1 span { color: #25816c; }
+.math-play-copy p { color: #607364; font-size: 14px; line-height: 1.8; margin: 0; }
+.math-play-friends { grid-area: friends; display: block; width: 100%; max-width: 370px; height: auto; justify-self: end; pointer-events: none; }
+.math-play-tabs.segmented { grid-area: tabs; display: inline-flex; width: fit-content; max-width: 100%; gap: 5px; padding: 5px; border: 1px solid #dde6d5; border-radius: 10px; background: #e7eedfdf; }
+.math-play-tabs.segmented .btn { min-height: 39px; padding: 8px 13px; font-size: 12px; color: #62745b; border-radius: 7px; white-space: nowrap; }
+.math-play-tabs.segmented .btn .icon { width: 16px; height: 16px; }
+.math-play-tabs.segmented .btn.selected { color: #2d6b51; border-color: #d4e0ca; background: #fffef8; box-shadow: 0 2px 5px #365a3910; }
+@media (min-width: 1500px) { .math-play-header { padding-block: 31px; } }
+@media (min-width: 721px) and (max-width: 1050px) {
+  .math-play-header { padding: 24px; grid-template-columns: minmax(0, 1fr) 220px; gap: 17px 0; }
+  .math-play-copy h1 { font-size: 32px; letter-spacing: -1.2px; }
+  .math-play-copy p { font-size: 12px; }
+  .math-play-tabs.segmented .btn { padding: 8px 10px; font-size: 11px; }
+}
+@media (max-width: 720px) {
+  .math-play-header { grid-template-columns: minmax(0, 1fr) minmax(110px, .85fr); grid-template-areas: "copy copy" "tabs friends"; gap: 11px 6px; padding: 21px 19px 17px; border-radius: 13px; margin-bottom: 20px; }
+  .math-play-eyebrow { font-size: 9px; letter-spacing: 1.5px; }
+  .math-play-copy h1 { font-size: clamp(27px, 7.5vw, 36px); letter-spacing: -1px; margin: 5px 0 8px; }
+  .math-play-copy p { max-width: 310px; font-size: 12px; line-height: 1.8; }
+  .math-play-friends { width: 100%; max-width: 200px; }
+  .math-play-tabs.segmented { width: 100%; flex-direction: column; gap: 3px; padding: 4px; }
+  .math-play-tabs.segmented .btn { width: 100%; min-height: 36px; justify-content: flex-start; padding: 7px 9px; font-size: 11px; }
+  .math-play-tabs.segmented .btn .icon { width: 14px; height: 14px; }
+}

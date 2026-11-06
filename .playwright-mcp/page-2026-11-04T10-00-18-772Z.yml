@@ -1,0 +1,300 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - link "g ✦ Good쌤 함께 발견하는 수학" [ref=e5] [cursor=pointer]:
+      - /url: "#"
+      - generic [ref=e6]:
+        - text: g
+        - generic [ref=e7]: ✦
+      - generic [ref=e8]:
+        - text: Good쌤
+        - generic [ref=e9]: 함께 발견하는 수학
+    - generic [ref=e10]:
+      - text: 공통수학2
+      - generic [ref=e13]: 고1
+    - generic [ref=e14]: MY LEARNING
+    - navigation "주 메뉴" [ref=e15]:
+      - button "나의 학습 홈" [ref=e16] [cursor=pointer]
+      - button "개념 탐구" [ref=e20] [cursor=pointer]
+      - button "디지털 학습지" [ref=e24] [cursor=pointer]
+      - button "개념 퀴즈" [ref=e28] [cursor=pointer]
+      - button "수다노트" [ref=e32] [cursor=pointer]
+      - button "질문 게시판" [ref=e36] [cursor=pointer]
+      - button "나의 성장 기록" [ref=e40] [cursor=pointer]
+    - generic [ref=e44]:
+      - generic [ref=e45]: ✦
+      - strong [ref=e46]: 조금씩, 나의 속도로
+      - paragraph [ref=e47]: 정답보다 빛나는 건너의 생각하는 과정이야.
+      - generic [ref=e48]: ↗
+    - generic [ref=e53]:
+      - button "교사 대시보드" [ref=e54] [cursor=pointer]
+      - generic [ref=e60]: 이 브라우저에 자동 저장
+  - generic [ref=e62]:
+    - banner [ref=e63]:
+      - generic [ref=e64]:
+        - generic [ref=e65]: 나의 클래스
+        - strong [ref=e68]: 나의 학습 홈
+      - generic [ref=e69]:
+        - generic [ref=e70]: 1학년 1반
+        - button "Good쌤 피드백 알림" [ref=e71] [cursor=pointer]
+        - button "나 나의 학습 학생" [ref=e75] [cursor=pointer]:
+          - generic [ref=e76]: 나
+          - generic [ref=e77]:
+            - text: 나의 학습
+            - generic [ref=e78]: 학생
+    - main [ref=e81]:
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - generic [ref=e84]: MY MATH JOURNEY
+          - heading "반가워요, 수학 탐험가" [level=1] [ref=e85]
+          - paragraph [ref=e88]: 오늘도 Good쌤과 함께, 수학 속 나만의 발견을 시작해 볼까요?
+        - generic [ref=e89]: 11월 4일
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e95]:
+              - generic [ref=e96]: 특성화고 1학년 · 공통수학2
+              - heading "함수, 직접 움직이면 생각이 연결돼요." [level=2] [ref=e98]: 함수, 직접 움직이면생각이 연결돼요.
+              - paragraph [ref=e99]: 그래프를 움직이고, 나의 언어로 설명하며정답 너머의 수학을 발견해요.
+              - button "오늘의 탐구 시작하기" [ref=e100] [cursor=pointer]
+              - generic [ref=e103]: 틀려도 괜찮아, 발견하면 되니까!
+            - generic [aria-hidden]:
+              - img:
+                - generic: x
+                - generic: "y"
+              - generic:
+                - generic:
+                  - generic:
+                    - math:
+                      - generic:
+                        - generic:
+                          - generic: f
+                          - generic: (
+                          - generic: x
+                          - generic: )
+                          - generic: =
+                          - generic:
+                            - generic: x
+                            - generic: "2"
+                  - generic [aria-hidden]:
+                    - generic: f(x) =
+                    - generic:
+                      - generic:
+                        - text: x
+                        - generic: "2"
+              - generic: ✦
+              - generic: ✧
+              - generic: 작은 호기심이, 큰 이해로.
+          - generic [ref=e106]:
+            - article [ref=e107]:
+              - generic [ref=e111]:
+                - generic [ref=e112]: 완료한 개념
+                - strong [ref=e113]: 0 / 6개
+            - article [ref=e114]:
+              - generic [ref=e118]:
+                - generic [ref=e119]: 해결한 문제
+                - strong [ref=e120]: 0 / 16문제
+            - article [ref=e121]:
+              - generic [ref=e125]:
+                - generic [ref=e126]: 쌓아 온 수다노트
+                - strong [ref=e127]: 0 편
+          - generic [ref=e128]:
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - heading "오늘의 함수 탐구" [level=2] [ref=e131]
+                - paragraph [ref=e132]: 개념을 만나고, 직접 움직이며 이해해요.
+              - button "전체 학습 보기" [ref=e133] [cursor=pointer]
+            - generic [ref=e136]:
+              - button "CHAPTER 01 기초 개념 함수의 뜻과 그래프 대응 속에 숨어 있는 규칙 찾기 0 / 6 개념 완료" [ref=e137] [cursor=pointer]:
+                - generic [ref=e138]: CHAPTER 01
+                - generic [ref=e143]: 기초 개념
+                - heading "함수의 뜻과 그래프" [level=3] [ref=e144]
+                - paragraph [ref=e145]: 대응 속에 숨어 있는 규칙 찾기
+                - generic [ref=e146]: 0 / 6 개념 완료
+              - button "CHAPTER 02 연결과 확장 합성함수와 역함수 함수를 연결하고, 거꾸로 생각하기 변수를 조절하며 발견하기" [ref=e152] [cursor=pointer]:
+                - generic [ref=e153]: CHAPTER 02
+                - generic [ref=e158]: 연결과 확장
+                - heading "합성함수와 역함수" [level=3] [ref=e159]
+                - paragraph [ref=e160]: 함수를 연결하고, 거꾸로 생각하기
+                - generic [ref=e161]: 변수를 조절하며 발견하기
+              - button "CHAPTER 03 그래프 탐구 유리함수 분모가 있는 함수의 세계 탐험 변수를 조절하며 발견하기" [ref=e166] [cursor=pointer]:
+                - generic [ref=e167]: CHAPTER 03
+                - generic [ref=e172]: 그래프 탐구
+                - heading "유리함수" [level=3] [ref=e173]
+                - paragraph [ref=e174]: 분모가 있는 함수의 세계 탐험
+                - generic [ref=e175]: 변수를 조절하며 발견하기
+              - button "CHAPTER 04 그래프 탐구 무리함수 루트 속 조건과 그래프의 시작점 변수를 조절하며 발견하기" [ref=e180] [cursor=pointer]:
+                - generic [ref=e181]: CHAPTER 04
+                - generic [ref=e186]: 그래프 탐구
+                - heading "무리함수" [level=3] [ref=e187]
+                - paragraph [ref=e188]: 루트 속 조건과 그래프의 시작점
+                - generic [ref=e189]: 변수를 조절하며 발견하기
+          - generic [ref=e194]:
+            - generic [ref=e195]:
+              - generic [ref=e196]:
+                - generic [ref=e197]: 직접 움직이는 수학
+                - heading "그래프가 들려주는 이야기" [level=3] [ref=e200]
+              - generic [ref=e201]: 인터랙티브 탐구
+            - group "탐구할 함수" [ref=e203]:
+              - button "이차함수" [pressed] [ref=e204] [cursor=pointer]
+              - button "일차함수" [ref=e205] [cursor=pointer]
+              - button "유리함수" [ref=e206] [cursor=pointer]
+              - button "무리함수" [ref=e207] [cursor=pointer]
+              - button "합성함수" [ref=e208] [cursor=pointer]
+              - button "역함수" [ref=e209] [cursor=pointer]
+            - generic [ref=e211]:
+              - math [ref=e213]:
+                - generic [ref=e215]:
+                  - generic [ref=e216]: "y"
+                  - generic [ref=e217]: =
+                  - generic [ref=e218]: "1"
+                  - generic [ref=e219]: (
+                  - generic [ref=e220]: x
+                  - generic [ref=e221]: −
+                  - generic [ref=e222]: "1"
+                  - generic [ref=e223]:
+                    - generic [ref=e224]: )
+                    - generic [ref=e225]: "2"
+                  - generic [ref=e226]: −
+                  - generic [ref=e227]: "1"
+              - generic [aria-hidden] [ref=e228]:
+                - generic [ref=e229]: y =
+                - generic [ref=e230]: 1(x −
+                - generic [ref=e231]:
+                  - text: "1"
+                  - generic [ref=e232]:
+                    - text: )
+                    - generic [ref=e233]: "2"
+                  - text: −
+                - generic [ref=e238]: "1"
+            - img "이차함수 탐구 그래프. 아래 슬라이더 또는 그래프 위 점을 움직이세요." [ref=e240]:
+              - generic [ref=e241]:
+                - generic [ref=e243]: "-10"
+                - generic [ref=e244]: "-8"
+                - generic [ref=e245]: "-6"
+                - generic [ref=e246]: "-4"
+                - generic [ref=e247]: "-2"
+                - generic [ref=e248]: "2"
+                - generic [ref=e249]: "4"
+                - generic [ref=e250]: "6"
+                - generic [ref=e251]: "8"
+                - generic [ref=e252]: "10"
+                - generic [ref=e253]: "-6"
+                - generic [ref=e254]: "-4"
+                - generic [ref=e255]: "-2"
+                - generic [ref=e256]: "2"
+                - generic [ref=e257]: "4"
+                - generic [ref=e258]: "6"
+              - generic [ref=e263]:
+                - generic [ref=e264]: x
+                - generic [ref=e265]: "y"
+                - generic [ref=e266]: O
+            - generic [ref=e267]:
+              - generic [ref=e268]: 나의 그래프
+              - generic [ref=e270]:
+                - checkbox "기본 그래프 함께 보기" [checked] [ref=e271]
+                - text: 기본 그래프 함께 보기
+              - button "초기화" [ref=e272] [cursor=pointer]
+            - generic [ref=e275]:
+              - generic [ref=e276]:
+                - generic [ref=e277]:
+                  - generic [ref=e278]:
+                    - math [ref=e280]:
+                      - generic [ref=e281]: a
+                    - generic [ref=e285]: a
+                  - generic [ref=e286]: "1"
+                - slider "그래프 변수 a" [ref=e287]: "1"
+                - generic [ref=e288]: 기울기 · 모양
+              - generic [ref=e289]:
+                - generic [ref=e290]:
+                  - generic [ref=e291]:
+                    - math [ref=e293]:
+                      - generic [ref=e294]: h
+                    - generic [ref=e298]: h
+                  - generic [ref=e299]: "1"
+                - slider "그래프 변수 h" [ref=e300]: "1"
+                - generic [ref=e301]: 좌우 이동
+              - generic [ref=e302]:
+                - generic [ref=e303]:
+                  - generic [ref=e304]:
+                    - math [ref=e306]:
+                      - generic [ref=e307]: k
+                    - generic [ref=e311]: k
+                  - generic [ref=e312]: "-1"
+                - slider "그래프 변수 k" [ref=e313]: "-1"
+                - generic [ref=e314]: 위아래 이동
+            - generic [ref=e315]: h를 바꾸면 좌우로, k를 바꾸면 위아래로! 점을 드래그하거나 슬라이더를 움직여 보세요.
+            - button "탐구실에서 더 알아보기" [ref=e319] [cursor=pointer]
+          - generic [ref=e322]:
+            - generic [ref=e323]:
+              - generic [ref=e327]:
+                - heading "가볍게 확인하는 개념 퀴즈" [level=3] [ref=e328]
+                - paragraph [ref=e329]: 6개의 짧은 질문으로 이해를 확인해요.
+              - button "개념 퀴즈 시작" [ref=e330] [cursor=pointer]
+            - generic [ref=e333]:
+              - generic [ref=e337]:
+                - heading "궁금할 땐, 질문해도 괜찮아" [level=3] [ref=e338]
+                - paragraph [ref=e339]: 막힌 문항과 나의 생각을 함께 나눠요.
+              - button "질문 게시판 열기" [ref=e340] [cursor=pointer]
+        - complementary [ref=e343]:
+          - generic [ref=e344]:
+            - generic [ref=e345]:
+              - heading "오늘, 마음은 어때요?" [level=3] [ref=e346]
+              - generic [ref=e347]: ☀
+            - paragraph [ref=e348]: 지금의 마음을 Good쌤에게 알려줘요.
+            - generic [ref=e349]:
+              - button "😆 신나요" [ref=e350] [cursor=pointer]:
+                - generic [ref=e351]: 😆
+                - generic [ref=e352]: 신나요
+              - button "🙂 좋아요" [ref=e353] [cursor=pointer]:
+                - generic [ref=e354]: 🙂
+                - generic [ref=e355]: 좋아요
+              - button "😐 보통이에요" [ref=e356] [cursor=pointer]:
+                - generic [ref=e357]: 😐
+                - generic [ref=e358]: 보통이에요
+              - button "😔 힘들어요" [ref=e359] [cursor=pointer]:
+                - generic [ref=e360]: 😔
+                - generic [ref=e361]: 힘들어요
+            - generic [ref=e362]: 어떤 마음이든, 괜찮아요.
+          - generic [ref=e365]:
+            - generic [ref=e366]:
+              - heading "나의 학습 여정" [level=3] [ref=e367]
+              - generic [ref=e368]: 함수 단원
+            - generic [ref=e370]:
+              - generic [ref=e371]: 0%
+              - generic [ref=e372]: 차곡차곡 성장 중
+            - generic [ref=e373]:
+              - generic [ref=e374]:
+                - generic [ref=e375]: "1"
+                - generic [ref=e376]:
+                  - strong [ref=e377]: 개념 발견하기
+                  - generic [ref=e378]: 0 / 6개 완료
+              - generic [ref=e379]:
+                - generic [ref=e380]: "2"
+                - generic [ref=e381]:
+                  - strong [ref=e382]: 문제 해결하기
+                  - generic [ref=e383]: 0 / 16문제 해결
+              - generic [ref=e384]:
+                - generic [ref=e385]: "3"
+                - generic [ref=e386]:
+                  - strong [ref=e387]: 생각 돌아보기
+                  - generic [ref=e388]: 수다노트에 나의 언어로
+          - generic [ref=e389]:
+            - generic [ref=e390]:
+              - heading "Good쌤의 한마디" [level=3] [ref=e391]
+              - generic [ref=e392]: ✦
+            - generic [ref=e393]:
+              - generic [ref=e394]: G
+              - generic [ref=e395]:
+                - generic [ref=e396]: Good쌤
+                - generic [ref=e397]: 언제나 너를 응원해
+              - generic [ref=e398]: 응원
+            - paragraph [ref=e399]: “빨리 풀지 않아도 괜찮아. 왜 그렇게 생각했는지, 너만의 이야기를 들려줘. 작은 발견부터 함께 시작하자!”
+            - button "나의 성장 기록 보기" [ref=e400] [cursor=pointer]
+          - generic [ref=e403]:
+            - heading "오늘의 발견을 한 줄로 남겨볼까요?" [level=3] [ref=e407]: 오늘의 발견을한 줄로 남겨볼까요?
+            - paragraph [ref=e408]: 나의 생각이 쌓이면어느새 성장의 기록이 돼요.
+            - button "수다노트 쓰기" [ref=e409] [cursor=pointer]
+            - generic [ref=e412]: ✎
+    - contentinfo [ref=e413]:
+      - generic [ref=e414]: Good쌤과 함께, 오늘도 한 걸음 성장했어요.
+      - generic [ref=e415]: 공통수학2 · 함수 · 특성화고 1학년

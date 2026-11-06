@@ -1,0 +1,6 @@
+---
+description: Vanilla JavaScript 및 Vite 프로젝트 작업 규칙
+alwaysApply: true
+---
+
+- 코드 작업 전에 루트의 AGENTS.md를 읽고 따릅니다.

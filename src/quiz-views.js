@@ -1,0 +1,24 @@
+import { escapeHTML as esc, icon, math, actionButton as button } from './ui.js';
+import { QUIZ_TOPICS } from './quiz-generator.js';
+import { QUIZ_LEVELS } from './quiz-levels.js';
+import { playProgress } from './play-progress.js';
+import { renderQuizText } from './quiz-math.js';
+import { quizTimeLabel } from './quiz-timer.js';
+
+const topicDetails = [
+  ['f(x)', '입력과 출력의 대응을 살펴봐요.'],
+  ['X\\to Y', '가능한 입력과 출력의 범위를 찾아요.'],
+  ['g\\circ f', '함수의 순서와 계산을 연결해요.'],
+  ['f^{-1}', '출력에서 원래 입력을 찾아요.'],
+  ['\\dfrac{1}{x}', '분모의 조건과 그래프를 알아봐요.'],
+  ['\\sqrt{x}', '근호 속 조건과 그래프를 탐구해요.']
+];
+export function quizTopicPicker(state, level, soundEnabled) {
+  const stage = playProgress(state).quiz.stages[level], passed = stage?.passed || {};
+  return `<section class="quiz-topic-picker"><div class="section-row"><div><span class="tag">${level}단계 · ${QUIZ_LEVELS[level - 1].title}</span><h2>어떤 퀴즈에 참여할까요?</h2><p>참여할 제목을 누르면 랜덤 문제와 풀이 타이머가 시작돼요.</p></div><button class="btn light small" data-action="quiz-toggle-sound" aria-pressed="${soundEnabled}">효과음 ${soundEnabled ? '켜짐' : '꺼짐'}</button></div><div class="quiz-topic-summary"><span>${QUIZ_LEVELS[level - 1].description}</span><strong>단계당 6문항 · ${Object.keys(passed).length} / 6 해결</strong></div><div class="quiz-topic-grid">${QUIZ_TOPICS.map((topic, i) => `<button class="quiz-topic-card ${passed[i] ? 'is-solved' : ''}" data-action="quiz-open" data-index="${i}"><span class="quiz-topic-symbol" aria-hidden="true">${math(topicDetails[i][0])}</span><span class="quiz-topic-copy"><small>${passed[i] ? '✓ 해결 · 복습 가능' : `${String(i + 1).padStart(2, '0')} · 랜덤 퀴즈`}</small><strong>${esc(topic.title)}</strong><span>${topicDetails[i][1]}</span></span><span class="quiz-topic-arrow" aria-hidden="true">${icon('arrow')}</span></button>`).join('')}</div>${stage?.completedAt && level < 5 ? `<div class="quiz-topic-complete">${button(`${level + 1}단계로 이동 →`, 'quiz-advance', 'teal', `data-level="${level + 1}"`)}</div>` : ''}<p class="source-note">문제와 보기 순서는 무작위로 바뀝니다. 타이머는 제출하면 멈추며, 다른 화면이나 탭을 보는 시간은 제외해요.</p></section>`;
+}
+
+export function timedQuizView({ question, level, topic, selected, result, passed, seconds, soundEnabled, mastered }) {
+  const count = Object.keys(passed).length;
+  return `<div class="play-stage-description"><span class="tag">${level}단계 · ${QUIZ_LEVELS[level - 1].title}</span><p>${QUIZ_LEVELS[level - 1].description} 단계당 6문항을 해결해요.</p>${mastered ? button('마스터 인증서', 'quiz-certificate', 'soft small') : ''}</div><div class="quiz-layout"><section class="panel quiz-card" aria-labelledby="quiz-question"><div class="quiz-session-tools">${button('← 주제 목록', 'quiz-topics', 'light small')}<div class="quiz-timer" role="timer" aria-label="문제 풀이 경과 시간" aria-live="off">${icon('clock')}<span><small>풀이 시간 · <span id="quiz-timer-state">${result ? '제출 완료' : '진행 중'}</span></small><output id="quiz-timer-value">${quizTimeLabel(seconds)}</output></span></div><button class="btn light small" data-action="quiz-toggle-sound" aria-pressed="${soundEnabled}">효과음 ${soundEnabled ? '켜짐' : '꺼짐'}</button></div><div class="section-row"><span class="tag">${question.title}</span><strong>${question.review ? '복습 문항' : `${Math.min(6, count + (result?.ok ? 0 : 1))} / 6문항`}</strong></div><div class="quiz-illustration">${icon('quiz')}</div><h2 id="quiz-question" class="quiz-question-text">${renderQuizText(question.q)}</h2><div class="quiz-choices">${question.options.map((option, i) => button(`<span class="quiz-choice-number">${i + 1}</span><span class="quiz-option-copy">${renderQuizText(option)}</span>`, 'quiz-select', selected === i ? 'selected' : '', `data-index="${i}" aria-pressed="${selected === i}"`)).join('')}</div>${result ? `<div class="feedback ${result.ok ? 'ok' : ''}" role="status"><strong>${result.ok ? '✓ 잘 발견했어요!' : '조금 더 생각해 볼까요?'}</strong><p>${renderQuizText(result.message)}</p><small>누적 풀이 시간 ${quizTimeLabel(seconds)}</small></div>` : ''}<div class="row space-between mt-3">${button('다시 생각하기', 'quiz-retry', 'light')}${result?.ok ? button(`다음 랜덤 문항 ${icon('arrow')}`, 'quiz-next', 'teal') : button('내 생각 확인하기', 'quiz-check', 'teal', selected === null ? 'disabled' : '')}</div></section><aside><section class="panel"><span class="eyeline">${icon('growth')} 나의 개념 이해</span><h3>${level}단계 · ${count} / 6개 해결</h3><div class="progress-track"><div class="progress-bar" style="width:${count / 6 * 100}%"></div></div><div class="quiz-nav">${QUIZ_TOPICS.map((item, i) => `<button data-action="quiz-open" data-index="${i}" class="${i === topic ? 'active' : ''}"><span>${passed[i] ? '✓' : String(i + 1).padStart(2, '0')}</span>${item.title}${icon('chevron')}</button>`).join('')}</div></section><section class="panel writing-guide mt-2"><h3>천천히 생각해도 괜찮아요</h3><p>시간 제한 없이 풀이 시간을 기록해요.<br/>제출하거나 다른 화면을 보면 타이머가 멈춰요.</p>${button('함수 탐구실 열기', 'go-explore', 'soft')}</section></aside></div>`;
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 280" fill="none">
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#C7DCCE" stroke-width=".7"/>
+    </pattern>
+    <linearGradient id="fade">
+      <stop stop-color="white" stop-opacity=".12"/>
+      <stop offset="1" stop-color="white" stop-opacity=".8"/>
+    </linearGradient>
+    <mask id="visibility"><rect width="1080" height="280" fill="url(#fade)"/></mask>
+  </defs>
+  <g mask="url(#visibility)">
+    <rect width="1080" height="280" fill="url(#grid)"/>
+    <g stroke="#B6D1BF" stroke-width="1.4">
+      <circle cx="1030" cy="12" r="140"/>
+      <circle cx="1030" cy="12" r="112"/>
+      <path d="m565 196 85-121 85 121Zm43 0 42-61 43 61M485 275q165-220 315-50T1100 61"/>
+      <path d="m952 163 55-32 55 32v64l-55 32-55-32Zm0 0 55 32 55-32m-55 32v64"/>
+      <path d="M29 254h173m-129-60v86m-33-16q68-135 152-26"/>
+    </g>
+    <g fill="#BDCFB2">
+      <circle cx="650" cy="75" r="4"/><circle cx="565" cy="196" r="4"/><circle cx="735" cy="196" r="4"/>
+      <circle cx="1007" cy="195" r="3"/><circle cx="74" cy="238" r="4"/>
+    </g>
+  </g>
+</svg>

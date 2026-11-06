@@ -1,4 +1,16 @@
-/* 함수 탐구실: 외부 라이브러리·서버 없이 작동하는 교실용 정적 웹앱 */
+import './styles.css';
+import './workbooks.css';
+import './math-arcade.css';
+import './math-play-header.css';
+import './play-lab.css';
+import './quiz.css';
+import './set-logic.css';
+import './journey.css';
+import { createLearningSpace, activeStudentId, studentStorageKey } from './learning-space.js';
+import { math, toast } from './ui.js';
+import { WORKBOOKS, getWorkbook, currentWorkbookActivity, renderWorkbook, workbookSummary, createWorkbookInteractions } from './workbooks.js';
+
+/* Good쌤: 함수 탐구와 사고 기록을 연결하는 교실용 학습 앱 */
 'use strict';
 
 const STORAGE_KEY = 'function-inquiry-workbook-v1';
@@ -35,14 +47,15 @@ const QUESTIONS = [
 const DEFAULT_STATE = {
   view:'welcome',studentName:'',conceptIndex:0,questionIndex:0,
   completedConcepts:[],conceptSelection:{},demoInput:'1',demoDomain:'small',demoX:0,
-  answers:{},graphCoordinate:0
+  answers:{},graphCoordinate:0,workbookId:'first',workbookPageIndices:{},workbookActivityIndices:{}
 };
+let currentStudentId = activeStudentId();
 let state = loadState();
 let root = document.getElementById('app');
 
-function loadState(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY));return s&&typeof s==='object'?{...structuredCloneSafe(DEFAULT_STATE),...s}:structuredCloneSafe(DEFAULT_STATE);}catch(e){return structuredCloneSafe(DEFAULT_STATE)}}
+function loadState(){try{const s=JSON.parse(localStorage.getItem(studentStorageKey(currentStudentId)));return s&&typeof s==='object'?{...structuredCloneSafe(DEFAULT_STATE),...s}:structuredCloneSafe(DEFAULT_STATE);}catch(e){return structuredCloneSafe(DEFAULT_STATE)}}
 function structuredCloneSafe(obj){return JSON.parse(JSON.stringify(obj))}
-function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){ /* 저장소 제한 시 현재 화면은 계속 이용 가능 */ }}
+function save(){try{localStorage.setItem(studentStorageKey(currentStudentId),JSON.stringify(state));window.dispatchEvent(new Event('goodssaem-saved'));}catch(e){toast('저장 공간이 부족해요. 성장 기록을 파일로 내려받아 주세요.')}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function responseFor(id){return state.answers[id]||(state.answers[id]={});}
 function isConceptCompleted(id){return state.completedConcepts.includes(id)}
@@ -53,7 +66,7 @@ function unique(arr){return [...new Set(arr)]}
 function sameArray(a,b){return JSON.stringify((a||[]).slice().sort())===JSON.stringify((b||[]).slice().sort())}
 function chosen(field,value,selected){return `<button type="button" class="choice ${selected?'selected':''}" data-action="choose" data-field="${esc(field)}" data-value="${esc(value)}" aria-pressed="${selected?'true':'false'}">`}
 function btn(label,action,classes='',attrs=''){return `<button type="button" class="btn ${classes}" data-action="${action}" ${attrs}>${label}</button>`}
-function getQuestion(){return QUESTIONS[Math.max(0,Math.min(QUESTIONS.length-1,state.questionIndex))]}
+function getQuestion(){const workbook=getWorkbook(state.workbookId);return workbook?currentWorkbookActivity(workbook,state):QUESTIONS[Math.max(0,Math.min(QUESTIONS.length-1,state.questionIndex))]}
 
 /* SVG로 원본 학습지의 대응/그래프를 새롭게 그린다. */
 function mapDiagram(pairs, ids='diagram'){
@@ -116,36 +129,26 @@ function graphSvg(graph,axis='x',pos=0){
  return `<svg viewBox="0 0 490 279" role="img" aria-label="${esc(graphYLabel(graph))} 그래프. 주황색 ${axis==='x'?'세로선':'가로선'}을 움직이며 교점 개수를 조사합니다." xmlns="http://www.w3.org/2000/svg"><rect width="490" height="279" rx="15" fill="white"/>${grid.join('')}<line x1="35" x2="464" y1="${Y(0)}" y2="${Y(0)}" stroke="#6e8493" stroke-width="1.5"/><line x1="${X(0)}" x2="${X(0)}" y1="25" y2="259" stroke="#6e8493" stroke-width="1.5"/><text x="469" y="${Y(0)-7}" font-size="15" fill="#647784">x</text><text x="${X(0)+7}" y="22" font-size="15" fill="#647784">y</text><text x="${X(0)-13}" y="${Y(0)+18}" font-size="12" fill="#8998a4">0</text><defs><clipPath id="plotArea"><rect x="35" y="25" width="428" height="232"/></clipPath></defs><g clip-path="url(#plotArea)">${paths}${selector}</g><text x="35" y="272" font-size="12" fill="#7d909e">${esc(graphYLabel(graph))}</text></svg>`;
 }
 
-function renderShell(inner){
- const progress=correctCount();
- root.innerHTML=`<div class="app-shell">
- <aside class="sidebar" aria-label="학습 메뉴">
-  <div class="brand"><span class="brand-mark">ƒ</span><span>함수 탐구실</span></div>
-  <div class="side-caption">LEARNING JOURNEY</div>
-  <div class="side-menu">
-   <button type="button" class="side-item ${state.view==='welcome'?'active':''}" data-action="go-welcome"><span class="num">00</span> 시작하기</button>
-   <button type="button" class="side-item ${state.view==='concept'?'active':''}" data-action="go-concept"><span class="num">01</span> 개념 탐구 <span style="margin-left:auto;font-size:.7rem;">${state.completedConcepts.length}/6</span></button>
-   <button type="button" class="side-item ${state.view==='practice'?'active':''}" data-action="go-practice" ${state.completedConcepts.length<CONCEPTS.length?'disabled title="개념을 모두 탐구한 뒤 열립니다"':''}><span class="num">02</span> 문제 해결 <span style="margin-left:auto;font-size:.7rem;">${progress}/16</span></button>
-   <button type="button" class="side-item ${state.view==='summary'?'active':''}" data-action="go-summary"><span class="num">03</span> 성장 기록</button>
-  </div>
-  <div class="side-note">✦ 한 문제씩, 나의 속도로<br/>관찰하고 → 설명하고 → 수정하는 수학 학습</div>
-  <div class="side-foot">교과서 109~113쪽 학습지 재구성<br/>학생용 · 태블릿/PC 지원<br/>기록은 현재 브라우저에만 저장</div>
- </aside>
- <main class="content">
-  <div class="topline"><span class="eyebrow">GOOD MATH LAB · DIGITAL WORKSHEET</span><span class="user-chip">${state.studentName?esc(state.studentName)+'의 탐구 기록':'나의 수학 탐구'}</span></div>
-  ${inner}
-  <div class="foot-line">스스로 발견한 가능성과 자신감 · 함수의 뜻과 그래프</div>
- </main></div>`;
- setupDrawingCanvas();
-}
+const space = createLearningSpace({
+ get state(){return state;}, save, render, setupDrawing:setupDrawingCanvas,
+ get questions(){return getWorkbook(state.workbookId)?.activities||QUESTIONS;},
+ allQuestions:[...QUESTIONS,...WORKBOOKS.flatMap(workbook=>[...workbook.activities,...workbook.pages])],
+ totalQuestionCount:QUESTIONS.length+WORKBOOKS.reduce((sum,workbook)=>sum+workbook.activities.length,0), getQuestion,
+ switchStudent(id){currentStudentId=id;state=loadState();},
+ reloadStudent(){state=loadState();},
+ restoreState(next){state=structuredCloneSafe(next);state.view='welcome';}
+});
 
-function renderWelcome(){
- renderShell(`<section class="hero"><span class="eyebrow">DISCOVER · CONNECT · EXPLAIN</span><h1>함수, 외우지 말고<br/>직접 발견해 보자.</h1><p>그림의 연결을 살펴보고, 그래프를 움직이고, 힌트를 스스로 선택하며 배워요. 모든 문제는 화면에 하나씩 나타납니다.</p>
- <div class="row mt-3">${btn('개념 탐구 시작하기 →','start-concept','teal')}${state.completedConcepts.length===CONCEPTS.length?btn('이어서 문제 풀기','go-practice','light'):''}</div></section>
- <div class="overview-grid"><div class="overview-card"><strong>6단계</strong><span>상호작용 개념 학습</span></div><div class="overview-card"><strong>16문제</strong><span>교과서 기반 탐구 활동</span></div><div class="overview-card"><strong>3단계</strong><span>관찰 → 적용 → 설명</span></div></div>
- <section class="panel"><h2 class="section-title">오늘의 탐구는 이렇게 진행돼요</h2><div class="steps"><div class="step"><span class="step-number">01 · UNDERSTAND</span><strong>연결을 직접 확인</strong><p>함수와 세 집합의 뜻을 그림으로 이해하고 개념 퀴즈에 답해요.</p></div><div class="step"><span class="step-number">02 · INVESTIGATE</span><strong>유형을 알고 도전</strong><p>문제마다 접근 전략과 선택형 힌트가 제시돼요.</p></div><div class="step"><span class="step-number">03 · REFLECT</span><strong>내 풀이를 고쳐 쓰기</strong><p>판단한 이유를 기록하고 결과와 학습 과정을 확인해요.</p></div></div>
- <div class="separator"></div><label for="student-name" class="field-label">기록에 표시할 이름 또는 별명 (선택)</label><input id="student-name" class="field" maxlength="24" value="${esc(state.studentName)}" data-role="student-name" placeholder="예: 수학 탐험가" style="max-width:350px"/><p class="source-note mt-1">이름과 풀이 기록은 현재 기기의 브라우저에 저장됩니다. 교사에게 자동 전송되지 않으며, 결과 파일은 직접 내려받을 수 있습니다.</p></section>`);
+const inquiry=createWorkbookInteractions({get state(){return state;},save,render,getQuestion,space});
+
+function renderShell(inner){
+ space.shell(inner);
+ document.querySelectorAll('.math:not([data-rendered])').forEach(node=>{
+   const tex=node.textContent.replaceAll('−','-').replaceAll('²','^{2}').replaceAll('³','^{3}').replaceAll('½','\\frac{1}{2}');
+   node.innerHTML=math(tex);node.dataset.rendered='true';
+ });
 }
+function renderWelcome(){renderShell(space.home());}
 
 function conceptQuiz(id, question,options){
  const val=state.conceptSelection[id]||'';const f=state.conceptFeedback?.[id];
@@ -246,9 +249,10 @@ function renderFeedback(r){
  return `<section class="feedback ${r.correct?'ok':''}" role="status"><strong>${r.correct?'✓ 탐구 성공!':'↻ 다시 관찰해 볼까요?'}</strong><p>${esc(r.feedback)}</p></section>`;
 }
 function renderPractice(){
- if(state.completedConcepts.length<CONCEPTS.length){state.view='concept';save();renderConcept();return}
+ const workbook=getWorkbook(state.workbookId);
+ if(workbook){renderShell(renderWorkbook(workbook,state,space));return;}
  const q=getQuestion(),r=responseFor(q.id);
- renderShell(`<div class="screen-heading"><div><span class="eyeline">STEP 02 · ONE QUESTION AT A TIME</span><h2>${esc(q.title)}</h2><div class="row"><span class="tag">${esc(q.group)}</span><span class="tag purple">${esc(q.type)}</span><span class="source-ref">${esc(q.source)}</span></div></div><span class="tag gold">${state.questionIndex+1} / ${QUESTIONS.length} 문제</span></div>
+ renderShell(`${space.worksheetTools()}<div class="screen-heading"><div><span class="eyeline">STEP 02 · ONE QUESTION AT A TIME</span><h2>${esc(q.title)}</h2><div class="row"><span class="tag">${esc(q.group)}</span><span class="tag purple">${esc(q.type)}</span><span class="source-ref">${esc(q.source)}</span></div></div><span class="tag gold">${state.questionIndex+1} / ${QUESTIONS.length} 문제</span></div>
  <div class="row space-between"><span class="progress-title">맞혀서 해결한 문제 ${correctCount()} / ${QUESTIONS.length}</span><span class="source-ref">${Math.round(correctCount()/QUESTIONS.length*100)}%</span></div><div class="progress-track mt-1"><div class="progress-bar" style="width:${correctCount()/QUESTIONS.length*100}%"></div></div>
  <section class="panel mt-2"><div class="question-surface"><div class="eyeline">문제 읽기 · 조건 표시하기</div><div class="question-text mt-1">${esc(q.prompt)}</div>${renderVisual(q)}</div><div class="strategy-line mt-2"><b>이 문제에 접근하는 방법</b><br/>${esc(q.strategy)}</div>
  <div class="exercise-layout"><div class="question-panel"><div class="row space-between"><h3>나의 탐구와 답</h3><span class="floating-marker">관찰 → 적용 → 설명</span></div>
@@ -256,7 +260,7 @@ function renderPractice(){
  <div class="problem-form">${renderAnswerForm(q,r)}</div>
  <div class="drawing-section"><div class="row space-between"><span class="eyeline">✎ 손으로 직접 풀어 보기</span>${btn('지우기','clear-canvas','light xsmall')}</div><canvas class="drawing" width="960" height="240" aria-label="손글씨로 풀이를 그리는 캔버스" data-drawing="${esc(q.id)}"></canvas><span class="drawing-caption">마우스·손가락·애플펜슬로 그릴 수 있어요. 그림은 현재 브라우저에만 저장됩니다.</span></div>
  <label class="field-label mt-2" for="explanation">② 나의 풀이 이유 또는 수정한 생각 (선택)</label><textarea class="field" rows="3" id="explanation" data-role="note" data-field="explanation" placeholder="처음에는 ...라고 생각했지만 ...라는 이유로 수정했어요.">${esc(r.explanation||'')}</textarea>
- <div class="row mt-2">${btn('내 답 확인하기','check-question','teal')}</div>${renderFeedback(r)}</div>
+ ${space.mathPad(r)}<div class="row mt-2">${btn('내 답 확인하기','check-question','teal')}</div>${renderFeedback(r)}</div>
  <aside class="tool-panel">${renderHintBox(q,r)}<div class="separator"></div><h3>학습 메모</h3><p class="source-note">틀려도 괜찮아요. 힌트를 확인하고 답을 바꿔 다시 제출하면 수정 과정이 기록됩니다.</p><p class="source-note">답을 맞히면 풀이 근거가 표시됩니다. 학습 기록은 자동으로 이 기기에 저장됩니다.</p></aside></div>
  <div class="sticky-actions"><div class="row">${btn('← 이전 문제','question-prev','light',state.questionIndex===0?'disabled':'')}${btn('문제 목록 · 결과','go-summary','ghost')}</div>${btn(state.questionIndex===QUESTIONS.length-1?'결과 확인하기 →':'다음 문제 →','question-next','teal',!(r.attempts>0)?'disabled title="답을 한 번 제출하면 이동할 수 있습니다"':'')}</div>
  <p class="source-note">※ 교과서 113쪽의 그래프 분류 문제는 정의역과 공역을 실수 전체로 설정하여 탐구합니다. 해당 설정은 디지털 학습을 위한 명시적 조건입니다.</p></section>`);
@@ -305,14 +309,15 @@ function renderSummary(){
  renderShell(`<div class="screen-heading"><div><span class="eyeline">STEP 03 · MY GROWTH RECORD</span><h2>나의 탐구 성장 기록</h2><p class="subtext">어떤 유형을 이해했고, 어떤 문제에 다시 도전할지 살펴보세요.</p></div><span class="tag">현재 기기 저장</span></div>
  <section class="panel"><div class="stat-grid"><div class="stat-box"><b>${state.completedConcepts.length}/6</b><span>완료한 개념</span></div><div class="stat-box"><b>${count}/16</b><span>해결한 문제</span></div><div class="stat-box"><b>${totalAttempts()}</b><span>답 제출 횟수</span></div><div class="stat-box"><b>${totalHints()}</b><span>사용한 힌트</span></div></div>
  <div class="row mt-3">${btn('학습기록 JSON 저장','export-json','teal small')}${btn('학습기록 CSV 저장','export-csv','light small')}${btn('결과 인쇄','print','light small')}</div><p class="source-note mt-2">기록은 서버로 전송되지 않습니다. 다른 기기로 옮기려면 파일로 저장하세요. 손글씨 이미지는 JSON 결과에 포함되며 CSV에는 포함되지 않습니다.</p></section>
- <section class="panel"><h3>문제별 학습 현황</h3><div class="result-list">${QUESTIONS.map((q,i)=>{const r=state.answers[q.id]||{};const status=r.correct?'해결':r.attempts?'재도전':'시작 전';return `<div class="result-row"><div><span class="icon-dot">${String(i+1).padStart(2,'0')}</span> <b>${esc(q.title)}</b><br/><span class="source-note">${esc(q.type)} · ${esc(q.source)}</span></div><div class="row"><span class="${r.correct?'status-ok':'status-wait'}">${status}</span>${btn('열기','open-question','light xsmall',`data-question-index="${i}" ${state.completedConcepts.length<CONCEPTS.length?'disabled':''}`)}</div></div>`}).join('')}</div>
- <div class="sticky-actions">${btn('개념 다시 보기','go-concept','light')}${btn('학습지 계속 풀기','go-practice','teal',state.completedConcepts.length<CONCEPTS.length?'disabled':'')}</div></section>`);
+ <section class="panel"><div class="section-row"><h3>문제별 학습 현황</h3><div class="row">${btn('수다노트에 돌아보기','space-nav','light small','data-view="reflection"')}${btn('학습지 제출하기','submit-worksheet','teal small')}</div></div><div class="result-list">${QUESTIONS.map((q,i)=>{const r=state.answers[q.id]||{};const status=r.correct?'해결':r.attempts?'재도전':'시작 전';return `<div class="result-row"><div><span class="icon-dot">${String(i+1).padStart(2,'0')}</span> <b>${esc(q.title)}</b><br/><span class="source-note">${esc(q.type)} · ${esc(q.source)}</span></div><div class="row"><span class="${r.correct?'status-ok':'status-wait'}">${status}</span>${btn('열기','open-question','light xsmall',`data-question-index="${i}" `)}</div></div>`}).join('')}</div>
+ <div class="sticky-actions">${btn('개념 다시 보기','go-concept','light')}${btn('학습지 계속 풀기','open-content','teal','data-workbook="first"')}</div></section>${workbookSummary(state)}`);
 }
 
 function render(){
  if(state.view==='concept')renderConcept();
  else if(state.view==='practice')renderPractice();
  else if(state.view==='summary')renderSummary();
+ else if(['reflection','board','quiz','worksheets','explore','journey','resources','today','connection'].includes(state.view))renderShell(space[state.view]());
  else renderWelcome();
 }
 
@@ -329,13 +334,18 @@ function downloadFile(content,filename,type){
  const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 function exportJSON(){
- const payload={app:'함수 탐구실',version:'1.0',exportedAt:new Date().toISOString(),studentName:state.studentName,concepts:CONCEPTS.map(c=>({id:c.id,title:c.title,completed:isConceptCompleted(c.id)})),questions:QUESTIONS.map(q=>({id:q.id,source:q.source,title:q.title,type:q.type,...(state.answers[q.id]||{})}))};
+ const payload={app:'Good쌤 함수 탐구실',version:'3.0',exportedAt:new Date().toISOString(),studentName:state.studentName,...space.exportData(),explorer:state.explorer,concepts:CONCEPTS.map(c=>({id:c.id,title:c.title,completed:isConceptCompleted(c.id)})),questions:QUESTIONS.map(q=>({id:q.id,source:q.source,title:q.title,type:q.type,...(state.answers[q.id]||{})})),workbooks:WORKBOOKS.map(workbook=>({id:workbook.id,title:workbook.title,activities:workbook.activities.map(q=>({id:q.id,title:q.title,source:q.source,kind:q.widget.type,...(state.answers[q.id]||{})})),archivedPages:workbook.pages.filter(page=>state.answers[page.id]).map(page=>({...page,...state.answers[page.id]}))}))};
  downloadFile(JSON.stringify(payload,null,2),'함수탐구_학습기록.json','application/json;charset=utf-8');
 }
 function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
 function exportCSV(){
  const header=['이름','문항','출처','유형','해결','제출횟수','힌트사용','조건관찰','풀이설명'];
  const rows=QUESTIONS.map(q=>{const r=state.answers[q.id]||{};return [state.studentName,q.title,q.source,q.type,r.correct?'해결':r.attempts?'재도전':'미시도',r.attempts||0,r.hintsViewed||0,r.observation||'',r.explanation||''].map(csvCell).join(',')});
+ for(const workbook of WORKBOOKS){
+  for(const q of workbook.activities){const r=state.answers[q.id]||{};rows.push([state.studentName,q.title,q.source,q.widget.type,r.correct?'해결':r.attempts?'재도전':'미시도',r.attempts||0,r.hintsViewed||0,r.observation||'',[r.explanation,r.mathDraft,JSON.stringify(r.responses||{}),JSON.stringify(r.lab||{}),JSON.stringify(r.trials||[])].filter(Boolean).join(' / ')].map(csvCell).join(','));}
+  for(const page of workbook.pages){const r=state.answers[page.id];if(!r)continue;rows.push([state.studentName,page.title,`${workbook.title} · PDF ${page.page}쪽`,'이전 쪽별 기록',r.reviewed?'학습 완료':'학습 중','','',r.observation||'',[r.explanation,r.mathDraft].filter(Boolean).join(' / ')].map(csvCell).join(','));}
+ }
+
  downloadFile('\uFEFF'+[header.map(csvCell).join(','),...rows].join('\r\n'),'함수탐구_학습기록.csv','text/csv;charset=utf-8');
 }
 function setupDrawingCanvas(){
@@ -357,11 +367,11 @@ function setupDrawingCanvas(){
 
 document.addEventListener('click',ev=>{
  const trigger=ev.target.closest('[data-action]');if(!trigger||trigger.disabled)return;
- const action=trigger.dataset.action;let rerender=true;
+ const action=trigger.dataset.action;if(inquiry.action(action,trigger)||space.action(action,trigger))return;let rerender=true;
  switch(action){
   case 'go-welcome':state.view='welcome';break;
-  case 'start-concept':case 'go-concept':state.view='concept';break;
-  case 'go-practice':if(state.completedConcepts.length===CONCEPTS.length)state.view='practice';break;
+  case 'start-concept':case 'go-concept':state.workbookId='first';state.worksheetId='first';state.view='concept';break;
+  case 'go-practice':state.view='practice';break;
   case 'go-summary':state.view='summary';break;
   case 'concept-prev':state.conceptIndex=Math.max(0,state.conceptIndex-1);break;
   case 'concept-next':{
@@ -389,6 +399,7 @@ document.addEventListener('click',ev=>{
   }
   case 'check-question':{
    const q=getQuestion(),r=responseFor(q.id),result=evaluate(q,r);
+   space.saveObservation('풀이 과정',[r.observation,r.explanation].filter(Boolean).join(' / '),q.title);
    r.checked=true;r.feedback=result.message;
    if(result.ready){r.attempts=(r.attempts||0)+1;r.correct=result.correct;r.lastSubmittedAt=new Date().toISOString();}
    else r.checked=true;
@@ -401,7 +412,7 @@ document.addEventListener('click',ev=>{
    else {state.questionIndex++;state.graphCoordinate=0;}
    break;
   }
-  case 'open-question':state.questionIndex=Number(trigger.dataset.questionIndex)||0;state.view='practice';state.graphCoordinate=0;break;
+  case 'open-question':state.workbookId='first';state.worksheetId='first';state.questionIndex=Number(trigger.dataset.questionIndex)||0;state.view='practice';state.graphCoordinate=0;break;
   case 'clear-canvas':{
    const r=responseFor(getQuestion().id);r.drawing='';break;
   }
@@ -414,6 +425,7 @@ document.addEventListener('click',ev=>{
 });
 
 document.addEventListener('input',ev=>{
+ if(inquiry.input(ev.target))return;
  const field=ev.target.dataset.role;if(!field)return;
  if(field==='student-name')state.studentName=ev.target.value;
  else if(field==='note'){

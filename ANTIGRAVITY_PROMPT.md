@@ -1,6 +1,6 @@
 # Google Antigravity 개발 지시문 — 함수 탐구실
 
-다음 내용을 Antigravity 에이전트에 복사해 주세요. 이미 생성된 `index.html`, `styles.css`, `app.js`, `README.md`, `SOURCE_MAPPING.md` 파일을 기준으로 수정하도록 요청하는 프롬프트입니다.
+다음 내용을 Antigravity 에이전트에 복사해 주세요. 이미 생성된 `index.html`, `src/styles.css`, `src/app.js`, `README.md`, `SOURCE_MAPPING.md` 파일을 기준으로 수정하도록 요청하는 프롬프트입니다.
 
 ---
 
